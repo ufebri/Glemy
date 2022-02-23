@@ -5,13 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
+import com.raytalktech.gleamy.R
 import com.raytalktech.gleamy.Utils.Constants
+import com.raytalktech.gleamy.Utils.SwipeToDeleteCallback
 import com.raytalktech.gleamy.Utils.ViewModelFactory
 import com.raytalktech.gleamy.adapter.DailyWeatherAdapter
+import com.raytalktech.gleamy.data.source.local.entity.DailyEntity
 import com.raytalktech.gleamy.databinding.FragmentHomeBinding
 import com.raytalktech.gleamy.databinding.ItemCurrentWeatherBinding
 import com.raytalktech.gleamy.model.Daily
@@ -28,6 +37,7 @@ class HomeFragment : Fragment() {
     private lateinit var itemCurrentWeatherBinding: ItemCurrentWeatherBinding
     private val binding get() = _binding
     private lateinit var viewModel: HomeViewModel
+    private lateinit var adapters: DailyWeatherAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,10 +51,13 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         if (activity != null) {
             val factory = ViewModelFactory.getInstance(requireActivity())
             viewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
 
+            val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
+            itemTouchHelper.attachToRecyclerView(binding.rvResult)
             subscribeUi()
         }
     }
@@ -64,10 +77,41 @@ class HomeFragment : Fragment() {
     private fun setDailyWeather(daily: List<Daily>, timezone: String) {
         binding.rvResult.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = DailyWeatherAdapter(daily, timezone)
+            adapters = DailyWeatherAdapter(daily, timezone)
+            adapter = adapters
         }
 
+        //configure left swipe
+        swipeToDeleteCallback.leftBG = ContextCompat.getColor(requireActivity(), R.color.leftSwipeBG)
+        swipeToDeleteCallback.leftLabel = "Favorite"
+        swipeToDeleteCallback.leftIcon =
+            AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_baseline_favorite_24)
+
+        //configure right swipe
+        swipeToDeleteCallback.rightBG =
+            ContextCompat.getColor(requireActivity(), R.color.leftSwipeBG)
+        swipeToDeleteCallback.rightLabel = "Favorite"
+        swipeToDeleteCallback.rightIcon =
+            AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_baseline_favorite_24)
     }
+
+
+    private val swipeToDeleteCallback =
+        object : SwipeToDeleteCallback(
+            context,
+            0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                viewModel.addToFavorite(adapters.getSwipedData(viewHolder.absoluteAdapterPosition))
+
+                Snackbar.make(
+                    view as View,
+                    getString(R.string.snackbar_msg_success),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+        }
 
     private fun setCurrentWeather(data: DataResponse) {
 

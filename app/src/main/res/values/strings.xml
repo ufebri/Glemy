@@ -9,5 +9,6 @@
     <string name="humidity">Humidity</string>
     <string name="wind_speed">Wind Speed</string>
     <string name="snackbar_msg_undo">Item Has Been Deleted</string>
+    <string name="snackbar_msg_success">Item Has Been Added</string>
     <string name="undo">Undo</string>
 </resources>
