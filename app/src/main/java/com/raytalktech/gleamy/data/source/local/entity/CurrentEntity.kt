@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "weather_daily_table")
 class DailyEntity(
     @field:PrimaryKey(autoGenerate = true) var id: Int = 0,
+    var timeZone: String,
     var daily_dt: Int,
     var daily_temp_day: Double,
     var daily_temp_night: Double,

@@ -1,7 +1,7 @@
 package com.raytalktech.gleamy.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -30,9 +30,7 @@ class MainActivity : AppCompatActivity() {
         val navController: NavController = navHostFragment.navController
 
         val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home, R.id.navigation_favorite, R.id.navigation_profile
-            )
+            setOf(R.id.navigation_home, R.id.navigation_favorite)
         )
         setSupportActionBar(binding.toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)

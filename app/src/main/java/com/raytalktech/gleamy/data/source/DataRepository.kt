@@ -32,7 +32,7 @@ class DataRepository private constructor(
             }
     }
 
-    override fun getAllFavorite(): List<DailyEntity> {
+    override fun getAllFavorite(): LiveData<List<DailyEntity>> {
         return localDataSource.getDataList()
     }
 

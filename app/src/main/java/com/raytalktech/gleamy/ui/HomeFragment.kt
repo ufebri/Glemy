@@ -1,26 +1,34 @@
 package com.raytalktech.gleamy.ui
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import com.raytalktech.gleamy.R
 import com.raytalktech.gleamy.Utils.Constants
+import com.raytalktech.gleamy.Utils.ManagePermission
 import com.raytalktech.gleamy.Utils.SwipeToDeleteCallback
 import com.raytalktech.gleamy.Utils.ViewModelFactory
 import com.raytalktech.gleamy.adapter.DailyWeatherAdapter
-import com.raytalktech.gleamy.data.source.local.entity.DailyEntity
 import com.raytalktech.gleamy.databinding.FragmentHomeBinding
 import com.raytalktech.gleamy.databinding.ItemCurrentWeatherBinding
 import com.raytalktech.gleamy.model.Daily
@@ -38,6 +46,8 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding
     private lateinit var viewModel: HomeViewModel
     private lateinit var adapters: DailyWeatherAdapter
+    private lateinit var latitude: String
+    private lateinit var longitude: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,6 +63,8 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (activity != null) {
+            getLastKnownLocation(requireContext())
+
             val factory = ViewModelFactory.getInstance(requireActivity())
             viewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
 
@@ -62,8 +74,32 @@ class HomeFragment : Fragment() {
         }
     }
 
+    @SuppressLint("MissingPermission")
+    private fun getLastKnownLocation(context: Context) {
+        val locationManager: LocationManager =
+            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val providers: List<String> = locationManager.getProviders(true)
+        var location: Location? = null
+
+        for (i in providers.size - 1 downTo 0) {
+            location = locationManager.getLastKnownLocation(providers[i])
+            if (location != null)
+                break
+        }
+
+
+        val gps = DoubleArray(2)
+        if (location != null) {
+            gps[0] = location.latitude
+            gps[1] = location.longitude
+            latitude = gps[0].toString()
+            longitude = gps[1].toString()
+
+        }
+    }
+
     private fun subscribeUi() {
-        viewModel.getOneTimeCallWeather("-6.200000", "106.816666")
+        viewModel.getOneTimeCallWeather(latitude, longitude)
             .observe(viewLifecycleOwner, { result ->
                 if (result != null) {
                     setDailyWeather(result.daily, result.timezone)
@@ -82,7 +118,8 @@ class HomeFragment : Fragment() {
         }
 
         //configure left swipe
-        swipeToDeleteCallback.leftBG = ContextCompat.getColor(requireActivity(), R.color.leftSwipeBG)
+        swipeToDeleteCallback.leftBG =
+            ContextCompat.getColor(requireActivity(), R.color.leftSwipeBG)
         swipeToDeleteCallback.leftLabel = "Favorite"
         swipeToDeleteCallback.leftIcon =
             AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_baseline_favorite_24)

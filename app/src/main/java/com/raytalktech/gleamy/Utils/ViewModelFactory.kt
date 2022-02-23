@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.raytalktech.gleamy.data.source.DataRepository
+import com.raytalktech.gleamy.viewmodel.FavoriteViewModel
 import com.raytalktech.gleamy.viewmodel.HomeViewModel
 
 class ViewModelFactory private constructor(private val dataRepository: DataRepository) :
@@ -26,6 +27,9 @@ class ViewModelFactory private constructor(private val dataRepository: DataRepos
         when {
             modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
                 return HomeViewModel(dataRepository) as T
+            }
+            modelClass.isAssignableFrom(FavoriteViewModel::class.java) -> {
+                return FavoriteViewModel(dataRepository) as T
             }
             else -> throw Throwable("Unknown ViewModel class: " + modelClass.name)
         }

@@ -9,18 +9,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:descendantFocusability="blocksDescendants"
-        tools:context=".ui.MainActivity">
+        android:descendantFocusability="blocksDescendants">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="150dp"
             android:clipToPadding="false"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/item_daily_weather"
             tools:visibility="visible" />
 
 

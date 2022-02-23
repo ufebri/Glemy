@@ -11,4 +11,8 @@
     <string name="snackbar_msg_undo">Item Has Been Deleted</string>
     <string name="snackbar_msg_success">Item Has Been Added</string>
     <string name="undo">Undo</string>
+    <string name="email_atau_nomor_ponsel">Email Atau Nomor Ponsel</string>
+    <string name="kata_sandi">Kata Sandi</string>
+    <string name="lupa_kata_sandi">Lupa Kata Sandi</string>
+    <string name="masuk">Masuk</string>
 </resources>

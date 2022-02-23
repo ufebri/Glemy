@@ -6,7 +6,7 @@ import com.raytalktech.gleamy.model.DataResponse
 
 interface DataSource {
 
-    fun getAllFavorite(): List<DailyEntity>
+    fun getAllFavorite(): LiveData<List<DailyEntity>>
 
     fun insertDataFavorite(dataEntity: DailyEntity)
 

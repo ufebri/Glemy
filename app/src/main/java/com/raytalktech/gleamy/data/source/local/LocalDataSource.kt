@@ -1,5 +1,6 @@
 package com.raytalktech.gleamy.data.source.local
 
+import androidx.lifecycle.LiveData
 import com.raytalktech.gleamy.data.source.local.entity.DailyEntity
 import com.raytalktech.gleamy.data.source.local.room.AppDao
 
@@ -16,7 +17,7 @@ class LocalDataSource(private val appDao: AppDao) {
         }
     }
 
-    fun getDataList(): List<DailyEntity> = appDao.getAll()
+    fun getDataList(): LiveData<List<DailyEntity>> = appDao.getAll()
 
     fun insertData(dataEntity: DailyEntity) = appDao.insert(dataEntity)
 
