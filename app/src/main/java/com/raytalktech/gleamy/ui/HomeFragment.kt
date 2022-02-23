@@ -1,60 +1,105 @@
 package com.raytalktech.gleamy.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.raytalktech.gleamy.R
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.raytalktech.gleamy.Utils.Constants
+import com.raytalktech.gleamy.Utils.ViewModelFactory
+import com.raytalktech.gleamy.adapter.DailyWeatherAdapter
+import com.raytalktech.gleamy.databinding.FragmentHomeBinding
+import com.raytalktech.gleamy.databinding.ItemCurrentWeatherBinding
+import com.raytalktech.gleamy.model.Daily
+import com.raytalktech.gleamy.model.DataResponse
+import com.raytalktech.gleamy.viewmodel.HomeViewModel
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.roundToInt
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
+    private lateinit var _binding: FragmentHomeBinding
+    private lateinit var itemCurrentWeatherBinding: ItemCurrentWeatherBinding
+    private val binding get() = _binding
+    private lateinit var viewModel: HomeViewModel
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        itemCurrentWeatherBinding = _binding.itemCurrent
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (activity != null) {
+            val factory = ViewModelFactory.getInstance(requireActivity())
+            viewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
+
+            subscribeUi()
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+    private fun subscribeUi() {
+        viewModel.getOneTimeCallWeather("-6.200000", "106.816666")
+            .observe(viewLifecycleOwner, { result ->
+                if (result != null) {
+                    setDailyWeather(result.daily, result.timezone)
+                    setCurrentWeather(result)
+                } else {
+                    showError("Error Fetching")
+                }
+            })
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun setDailyWeather(daily: List<Daily>, timezone: String) {
+        binding.rvResult.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = DailyWeatherAdapter(daily, timezone)
+        }
+
     }
+
+    private fun setCurrentWeather(data: DataResponse) {
+
+        val sdf = SimpleDateFormat("EEE d MMM yyyy ", Locale.getDefault())
+        val date = Date(data.current.dt.toLong() * 1000)
+        sdf.timeZone = TimeZone.getTimeZone(data.timezone)
+
+        val location = data.timezone.replaceBefore("/", "").replace("/", "")
+
+
+        binding.itemCurrent.tvCurrentDt.text = String.format("%s, %s", location, sdf.format(date))
+        binding.itemCurrent.tvCurrentTemp.text =
+            String.format("%s°C", data.current.temp.roundToInt())
+        binding.itemCurrent.tvCurrentDescWeather.text = data.current.weather[0].description
+        binding.itemCurrent.tvValuePressure.text =
+            String.format("%s hPa", data.current.pressure.toString())
+        binding.itemCurrent.tvValueHumidity.text =
+            String.format("%s%s", data.current.humidity.toString(), "%")
+        binding.itemCurrent.tvValueWindSpeed.text =
+            String.format("%s m/s", data.current.wind_speed.toString())
+
+        Glide.with(requireActivity())
+            .load(Constants.ImageRandomBaseURL + location + "/500/300")
+            .into(binding.itemCurrent.ivBackCover)
+
+        Glide.with(requireActivity())
+            .load(Constants.ImageBaseURL + data.current.weather[0].icon + "@2x.png")
+            .into(binding.itemCurrent.ivIconWeather)
+    }
+
+    private fun showError(msg: String) {
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+    }
+
 }

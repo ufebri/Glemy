@@ -6,5 +6,4 @@ object Constants {
     const val API_KEY = "378bf603855da40d890c7fb4bec1c16d"
     const val ImageBaseURL = "http://openweathermap.org/img/wn/" //10d@2x.png
     const val ImageRandomBaseURL = "https://picsum.photos/seed/" //{place}/200/300
-    const val DataBaseName = "GleamyDB"
 }

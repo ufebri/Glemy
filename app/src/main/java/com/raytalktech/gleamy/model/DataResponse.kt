@@ -1,36 +1,44 @@
 package com.raytalktech.gleamy.model
 
-class DataResponse(
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class DataResponse(
     var lat: Double,
     var lon: Double,
     var timezone: String,
     var current: Current,
-    var daily: ArrayList<Daily>
-)
+    var daily: List<Daily>
+) : Parcelable
 
-class Current(
+@Parcelize
+data class Current(
     var dt: Int,
     var temp: Double,
     var pressure: Int,
     var humidity: Int,
     var wind_speed: Double,
-    var weather: ArrayList<Weather>
-)
+    var weather: List<Weather>
+) : Parcelable
 
-class Weather(
+@Parcelize
+data class Weather(
     var id: Int,
     var main: String,
     var description: String,
     var icon: String
-)
+) : Parcelable
 
-class Daily(
+@Parcelize
+data class Daily(
     var dt: Int,
     var temp: Temp,
-    var weather: ArrayList<Weather>
-)
+    var weather: List<Weather>
+) : Parcelable
 
-class Temp(
+@Parcelize
+data class Temp(
     var day: Double,
     var night: Double
-)
+) : Parcelable

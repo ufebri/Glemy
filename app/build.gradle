@@ -1,10 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'dagger.hilt.android.plugin'
-    //annotation processing Hilt
+    id 'kotlin-parcelize'
     id 'kotlin-kapt'
-    id 'androidx.navigation.safeargs'
 }
 
 android {
@@ -41,47 +39,46 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.5.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    //kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "androidx.core:core-ktx:$core_version"
 
-    // ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
-    // LiveData
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
 
-    //Network
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation("com.squareup.okhttp3:okhttp:4.9.0")
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
+    //UI
+    implementation "androidx.appcompat:appcompat:$appCompat_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayout_version"
+    implementation "com.google.android.material:material:$material_version"
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
+    implementation "com.facebook.shimmer:shimmer:$shimmer_version"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
-    //DI Hilt
-    implementation "com.google.dagger:hilt-android:2.28-alpha"
-    kapt "com.google.dagger:hilt-android-compiler:2.28-alpha"
 
-    //For Hilt support for ViewModel
-    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02'
-    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
+    //Testing
+    testImplementation "junit:junit:$jUnit_version"
+    androidTestImplementation "junit:junit:$jUnit_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
+    androidTestImplementation "androidx.test.ext:junit-ktx:$jUnitTest_version"
+    testImplementation "androidx.arch.core:core-testing:$androidCoreTest_version"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlin_version"
+    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
+    implementation "androidx.test.espresso:espresso-idling-resource:$espresso_version"
 
-    //Activity extension, referring with  "by viewModels"
-    implementation "androidx.activity:activity-ktx:1.2.0-beta01"
+    //network
+    implementation "androidx.activity:activity-ktx:$activityKTX_version"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okHTTP_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$archLifeCycle_version"
 
-    //Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9'
 
-    //Glide
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    kapt 'com.github.bumptech.glide:compiler:4.11.0'
+    //Offline - Room
+    implementation "androidx.room:room-runtime:$roomRuntime_version"
+    kapt "androidx.room:room-compiler:$room_version"
 
-    //Room Database
-    implementation "androidx.room:room-runtime:2.2.5"
-    kapt "androidx.room:room-compiler:2.2.5"
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation "androidx.room:room-ktx:2.2.5"
+    //pagination
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 }
