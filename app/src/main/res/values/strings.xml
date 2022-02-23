@@ -1,16 +1,12 @@
 <resources>
     <string name="app_name">Gleamy</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home">Home</string>
     <string name="favorite">Favorite</string>
-    <string name="profile">Profile</string>
     <string name="pressure">Pressure</string>
     <string name="humidity">Humidity</string>
     <string name="wind_speed">Wind Speed</string>
-    <string name="snackbar_msg_undo">Item Has Been Deleted</string>
     <string name="snackbar_msg_success">Item Has Been Added</string>
-    <string name="undo">Undo</string>
     <string name="email_atau_nomor_ponsel">Email Atau Nomor Ponsel</string>
     <string name="kata_sandi">Kata Sandi</string>
     <string name="lupa_kata_sandi">Lupa Kata Sandi</string>

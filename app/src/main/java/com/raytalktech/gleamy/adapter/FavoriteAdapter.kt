@@ -3,15 +3,11 @@ package com.raytalktech.gleamy.adapter
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.raytalktech.gleamy.Utils.Constants
 import com.raytalktech.gleamy.data.source.local.entity.DailyEntity
 import com.raytalktech.gleamy.databinding.ItemDailyWeatherBinding
-import com.raytalktech.gleamy.model.Daily
-import com.raytalktech.gleamy.model.Temp
-import com.raytalktech.gleamy.model.Weather
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
