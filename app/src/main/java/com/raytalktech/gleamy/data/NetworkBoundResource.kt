@@ -2,8 +2,8 @@ package com.raytalktech.gleamy.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.raytalktech.gleamy.Utils.AppExecutors
-import com.raytalktech.gleamy.Utils.Resource
+import com.raytalktech.gleamy.utils.AppExecutors
+import com.raytalktech.gleamy.utils.Resource
 import com.raytalktech.gleamy.data.source.remote.ApiResponse
 import com.raytalktech.gleamy.data.source.remote.StatusResponse
 

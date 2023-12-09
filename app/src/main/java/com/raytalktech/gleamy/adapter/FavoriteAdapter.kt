@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.raytalktech.gleamy.Utils.Constants
+import com.raytalktech.gleamy.BuildConfig
 import com.raytalktech.gleamy.data.source.local.entity.DailyEntity
 import com.raytalktech.gleamy.databinding.ItemDailyWeatherBinding
 import java.text.SimpleDateFormat
@@ -37,7 +37,7 @@ class FavoriteAdapter(private val list: List<DailyEntity>) :
 
             with(binding) {
                 Glide.with(root)
-                    .load(Constants.ImageBaseURL + daily.icon_weather + "@2x.png")
+                    .load(BuildConfig.IMAGE_BASE_URL + daily.icon_weather + "@2x.png")
                     .into(ivIconWeather)
             }
         }

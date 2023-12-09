@@ -2,7 +2,7 @@ package com.raytalktech.gleamy.data.source
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.raytalktech.gleamy.Utils.AppExecutors
+import com.raytalktech.gleamy.utils.AppExecutors
 import com.raytalktech.gleamy.data.source.local.LocalDataSource
 import com.raytalktech.gleamy.data.source.local.entity.DailyEntity
 import com.raytalktech.gleamy.data.source.remote.RemoteDataSource

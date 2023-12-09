@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.raytalktech.gleamy.R
-import com.raytalktech.gleamy.Utils.SwipeToDeleteCallback
-import com.raytalktech.gleamy.Utils.ViewModelFactory
+import com.raytalktech.gleamy.utils.SwipeToDeleteCallback
+import com.raytalktech.gleamy.utils.ViewModelFactory
 import com.raytalktech.gleamy.adapter.FavoriteAdapter
 import com.raytalktech.gleamy.data.source.local.entity.DailyEntity
 import com.raytalktech.gleamy.databinding.FragmentFavoriteBinding

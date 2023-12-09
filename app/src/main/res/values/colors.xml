@@ -11,4 +11,8 @@
 
     <color name="rightSwipeBG">#FF6347</color>
     <color name="leftSwipeBG">#006400</color>
+
+    <color name="colorPrimary">#CDDC39</color>
+    <color name="colorPrimaryDark">#FFEB3B</color>
+    <color name="colorAccent">#FFC107</color>
 </resources>

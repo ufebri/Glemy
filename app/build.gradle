@@ -5,23 +5,32 @@ plugins {
     id 'kotlin-kapt'
 }
 
+def apikeyPropertiesFile = rootProject.file("config.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+
 android {
-    compileSdk 30
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.raytalktech.gleamy"
         minSdk 21
-        targetSdk 30
+        targetSdk 34
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "APIKEY", apikeyProperties['APIKEY'])
+        buildConfigField("String", "BASEURL", apikeyProperties['BASEURL'])
+        buildConfigField("String", "IMAGE_BASE_URL", apikeyProperties['IMAGE_BASE_URL'])
+        buildConfigField("String", "IMAGE_RANDOM_BASEURL", apikeyProperties['IMAGE_RANDOM_BASEURL'])
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -33,8 +42,8 @@ android {
         jvmTarget = '1.8'
     }
 
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding true
     }
 }
 

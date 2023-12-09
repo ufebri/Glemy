@@ -1,7 +1,6 @@
 package com.raytalktech.gleamy.network
 
 import com.raytalktech.gleamy.BuildConfig
-import com.raytalktech.gleamy.Utils.Constants
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -13,7 +12,7 @@ class ApiConfig {
             val loggingInterceptor =
                 HttpLoggingInterceptor()
 
-            if (BuildConfig.BUILD_TYPE == "debug")
+            if (BuildConfig.DEBUG)
                 loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
             else
                 loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE)
@@ -22,7 +21,7 @@ class ApiConfig {
                 .addInterceptor(loggingInterceptor)
                 .build()
             val retrofit = Retrofit.Builder()
-                .baseUrl(Constants.BaseURL)
+                .baseUrl(BuildConfig.BASEURL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()

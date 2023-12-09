@@ -1,7 +1,9 @@
 package com.raytalktech.gleamy.ui
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
@@ -9,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -18,15 +22,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
+import com.raytalktech.gleamy.BuildConfig
 import com.raytalktech.gleamy.R
-import com.raytalktech.gleamy.Utils.Constants
-import com.raytalktech.gleamy.Utils.SwipeToDeleteCallback
-import com.raytalktech.gleamy.Utils.ViewModelFactory
 import com.raytalktech.gleamy.adapter.DailyWeatherAdapter
 import com.raytalktech.gleamy.databinding.FragmentHomeBinding
 import com.raytalktech.gleamy.databinding.ItemCurrentWeatherBinding
 import com.raytalktech.gleamy.model.Daily
 import com.raytalktech.gleamy.model.DataResponse
+import com.raytalktech.gleamy.utils.ManagePermission
+import com.raytalktech.gleamy.utils.SwipeToDeleteCallback
+import com.raytalktech.gleamy.utils.ViewModelFactory
 import com.raytalktech.gleamy.viewmodel.HomeViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -42,6 +47,7 @@ class HomeFragment : Fragment() {
     private lateinit var adapters: DailyWeatherAdapter
     private lateinit var latitude: String
     private lateinit var longitude: String
+    private lateinit var managePermission: ManagePermission
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,15 +63,33 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (activity != null) {
-            getLastKnownLocation(requireContext())
+            val permissionsToRequest = listOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
 
-            val factory = ViewModelFactory.getInstance(requireActivity())
-            viewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
+            val permissionsToGrant = permissionsToRequest
+                .filter { ContextCompat.checkSelfPermission(requireContext(), it) != PackageManager.PERMISSION_GRANTED }
+                .toTypedArray()
 
-            val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
-            itemTouchHelper.attachToRecyclerView(binding.rvResult)
-            subscribeUi()
+            if (permissionsToGrant.isEmpty()) {
+                getTheData()
+            } else {
+                // Request the permissions that are not granted
+                requestPermissions(permissionsToGrant, 1)
+            }
         }
+    }
+
+    private fun getTheData() {
+        getLastKnownLocation(requireContext())
+
+        val factory = ViewModelFactory.getInstance(requireActivity())
+        viewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
+
+        val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
+        itemTouchHelper.attachToRecyclerView(binding.rvResult)
+        subscribeUi()
     }
 
     @SuppressLint("MissingPermission")
@@ -165,11 +189,11 @@ class HomeFragment : Fragment() {
             String.format("%s m/s", data.current.wind_speed.toString())
 
         Glide.with(requireActivity())
-            .load(Constants.ImageRandomBaseURL + location + "/500/300")
+            .load(BuildConfig.IMAGE_RANDOM_BASEURL + location + "/500/300")
             .into(binding.itemCurrent.ivBackCover)
 
         Glide.with(requireActivity())
-            .load(Constants.ImageBaseURL + data.current.weather[0].icon + "@2x.png")
+            .load(BuildConfig.IMAGE_RANDOM_BASEURL + data.current.weather[0].icon + "@2x.png")
             .into(binding.itemCurrent.ivIconWeather)
     }
 
@@ -177,4 +201,38 @@ class HomeFragment : Fragment() {
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
     }
 
+    private val permissionLauncher: ActivityResultLauncher<Array<String>> =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            // Check if all requested permissions are granted
+            val allGranted = permissions.all { it.value }
+
+            if (allGranted) {
+                getTheData()
+            } else {
+                // Handle the case where not all requested permissions are granted
+                // ...
+                managePermission.showAlert(requireActivity())
+            }
+        }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == 1) {
+            val permissionsMap = mutableMapOf<String, Boolean>()
+
+            for (i in permissions.indices) {
+                permissionsMap[permissions[i]] = grantResults[i] == PackageManager.PERMISSION_GRANTED
+            }
+
+            if (permissionsMap.all { it.value }) {
+                // All requested permissions are granted
+                // Proceed with your logic
+                getTheData()
+            } else {
+                // Handle the case where not all requested permissions are granted
+                managePermission.showAlert(requireActivity())
+            }
+        }
+    }
 }
